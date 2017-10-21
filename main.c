@@ -60,7 +60,8 @@ int main(void)
     while (1) 
     {
 		
-		PORTD=spi_fast_shift(L);
+		PORTD=L;
+		spi_fast_shift(L);
 		L++;
 		_delay_ms(1000);
 //		btn_check();
