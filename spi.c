@@ -18,6 +18,7 @@
 void spi_init_master()
 // Initialize pins for spi communication
 {
+    volatile char IOReg;
     DDR_SPI &= ~((1<<DD_MOSI)|(1<<DD_MISO)|(1<<DD_SS)|(1<<DD_SCK));
     // Define the following pins as output
     DDR_SPI |= ((1<<DD_MOSI)|(1<<DD_SS)|(1<<DD_SCK));
@@ -30,6 +31,8 @@ void spi_init_master()
             (0<<CPOL)|              // Clock Polarity (0:SCK low / 1:SCK hi when idle)
             (0<<CPHA));             // Clock Phase (0:leading / 1:trailing edge sampling)
 
+    IOReg   = SPSR;               // очистить бит SPIF в регистре SPSR
+    IOReg   = SPDR;
   //  SPSR = (1<<SPI2X);              // Double Clock Rate
 //  PORT_SPI|=
 }
@@ -38,18 +41,20 @@ void spi_init_slave()
 // Initialize pins for spi communication
 // with interrupt
 {
-	DDR_SPI &= ~((1<<DD_MOSI)|(1<<DD_MISO)|(1<<DD_SS)|(1<<DD_SCK));
+    volatile char IOReg;	
+    DDR_SPI &= ~((1<<DD_MOSI)|(1<<DD_MISO)|(1<<DD_SS)|(1<<DD_SCK));
 	// Define the following pins as output
-	DDR_SPI |= ((1<<DD_MISO));
+    DDR_SPI |= ((1<<DD_MISO));
 	
-	SPCR = ((1<<SPE)|               // SPI Enable
+    SPCR = ((1<<SPE)|               // SPI Enable
 	(1<<SPIE)|              // SPI Interupt Enable
 	(0<<DORD)|              // Data Order (0:MSB first / 1:LSB first)
 	(0<<MSTR)|              // Master/Slave select
 	(0<<SPR1)|(0<<SPR0)|    // SPI Clock Rate
 	(0<<CPOL)|              // Clock Polarity (0:SCK low / 1:SCK hi when idle)
 	(0<<CPHA));             // Clock Phase (0:leading / 1:trailing edge sampling)
-
+    IOReg   = SPSR;               // очистить бит SPIF в регистре SPSR
+    IOReg   = SPDR;
 	//  SPSR = (1<<SPI2X);              // Double Clock Rate
 //	PORT_SPI|=1<<DD_SCK;
 }
